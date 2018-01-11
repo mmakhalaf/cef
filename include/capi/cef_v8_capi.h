@@ -33,7 +33,7 @@
 // by hand. See the translator.README.txt file in the tools directory for
 // more information.
 //
-// $hash=e9e43167b1cf8033bd7e6ba6931213d7cf4b69b5$
+// $hash=d85e28d5c7c2fa49ece1edab24be24eabe9c4346$
 //
 
 #ifndef CEF_INCLUDE_CAPI_CEF_V8_CAPI_H_
@@ -72,35 +72,35 @@ typedef struct _cef_v8context_t {
   // be accessed from the thread on which they are created. This function can be
   // called on any render process thread.
   ///
-  struct _cef_task_runner_t*(CEF_CALLBACK* get_task_runner)(
-      struct _cef_v8context_t* self);
+  struct _cef_task_runner_t *(CEF_CALLBACK *get_task_runner)(
+      struct _cef_v8context_t *self);
 
   ///
   // Returns true (1) if the underlying handle is valid and it can be accessed
   // on the current thread. Do not call any other functions if this function
   // returns false (0).
   ///
-  int(CEF_CALLBACK* is_valid)(struct _cef_v8context_t* self);
+  int(CEF_CALLBACK *is_valid)(struct _cef_v8context_t *self);
 
   ///
   // Returns the browser for this context. This function will return an NULL
   // reference for WebWorker contexts.
   ///
-  struct _cef_browser_t*(CEF_CALLBACK* get_browser)(
-      struct _cef_v8context_t* self);
+  struct _cef_browser_t *(CEF_CALLBACK *get_browser)(
+      struct _cef_v8context_t *self);
 
   ///
   // Returns the frame for this context. This function will return an NULL
   // reference for WebWorker contexts.
   ///
-  struct _cef_frame_t*(CEF_CALLBACK* get_frame)(struct _cef_v8context_t* self);
+  struct _cef_frame_t *(CEF_CALLBACK *get_frame)(struct _cef_v8context_t *self);
 
   ///
   // Returns the global object for this context. The context must be entered
   // before calling this function.
   ///
-  struct _cef_v8value_t*(CEF_CALLBACK* get_global)(
-      struct _cef_v8context_t* self);
+  struct _cef_v8value_t *(CEF_CALLBACK *get_global)(
+      struct _cef_v8context_t *self);
 
   ///
   // Enter this context. A context must be explicitly entered before creating a
@@ -109,20 +109,20 @@ typedef struct _cef_v8context_t {
   // objects belong to the context in which they are created. Returns true (1)
   // if the scope was entered successfully.
   ///
-  int(CEF_CALLBACK* enter)(struct _cef_v8context_t* self);
+  int(CEF_CALLBACK *enter)(struct _cef_v8context_t *self);
 
   ///
   // Exit this context. Call this function only after calling enter(). Returns
   // true (1) if the scope was exited successfully.
   ///
-  int(CEF_CALLBACK* exit)(struct _cef_v8context_t* self);
+  int(CEF_CALLBACK *exit)(struct _cef_v8context_t *self);
 
   ///
   // Returns true (1) if this object is pointing to the same handle as |that|
   // object.
   ///
-  int(CEF_CALLBACK* is_same)(struct _cef_v8context_t* self,
-                             struct _cef_v8context_t* that);
+  int(CEF_CALLBACK *is_same)(struct _cef_v8context_t *self,
+                             struct _cef_v8context_t *that);
 
   ///
   // Execute a string of JavaScript code in this V8 context. The |script_url|
@@ -132,23 +132,22 @@ typedef struct _cef_v8context_t {
   // function will return true (1). On failure |exception| will be set to the
   // exception, if any, and the function will return false (0).
   ///
-  int(CEF_CALLBACK* eval)(struct _cef_v8context_t* self,
-                          const cef_string_t* code,
-                          const cef_string_t* script_url,
-                          int start_line,
-                          struct _cef_v8value_t** retval,
-                          struct _cef_v8exception_t** exception);
+  int(CEF_CALLBACK *eval)(struct _cef_v8context_t *self,
+                          const cef_string_t *code,
+                          const cef_string_t *script_url, int start_line,
+                          struct _cef_v8value_t **retval,
+                          struct _cef_v8exception_t **exception);
 } cef_v8context_t;
 
 ///
 // Returns the current (top) context object in the V8 context stack.
 ///
-CEF_EXPORT cef_v8context_t* cef_v8context_get_current_context();
+CEF_EXPORT cef_v8context_t *cef_v8context_get_current_context();
 
 ///
 // Returns the entered (bottom) context object in the V8 context stack.
 ///
-CEF_EXPORT cef_v8context_t* cef_v8context_get_entered_context();
+CEF_EXPORT cef_v8context_t *cef_v8context_get_entered_context();
 
 ///
 // Returns true (1) if V8 is currently inside a context.
@@ -173,13 +172,13 @@ typedef struct _cef_v8handler_t {
   // function return value. If execution fails set |exception| to the exception
   // that will be thrown. Return true (1) if execution was handled.
   ///
-  int(CEF_CALLBACK* execute)(struct _cef_v8handler_t* self,
-                             const cef_string_t* name,
-                             struct _cef_v8value_t* object,
+  int(CEF_CALLBACK *execute)(struct _cef_v8handler_t *self,
+                             const cef_string_t *name,
+                             struct _cef_v8value_t *object,
                              size_t argumentsCount,
-                             struct _cef_v8value_t* const* arguments,
-                             struct _cef_v8value_t** retval,
-                             cef_string_t* exception);
+                             struct _cef_v8value_t *const *arguments,
+                             struct _cef_v8value_t **retval,
+                             cef_string_t *exception);
 } cef_v8handler_t;
 
 ///
@@ -201,11 +200,11 @@ typedef struct _cef_v8accessor_t {
   // exception that will be thrown. Return true (1) if accessor retrieval was
   // handled.
   ///
-  int(CEF_CALLBACK* get)(struct _cef_v8accessor_t* self,
-                         const cef_string_t* name,
-                         struct _cef_v8value_t* object,
-                         struct _cef_v8value_t** retval,
-                         cef_string_t* exception);
+  int(CEF_CALLBACK *get)(struct _cef_v8accessor_t *self,
+                         const cef_string_t *name,
+                         struct _cef_v8value_t *object,
+                         struct _cef_v8value_t **retval,
+                         cef_string_t *exception);
 
   ///
   // Handle assignment of the accessor value identified by |name|. |object| is
@@ -214,11 +213,10 @@ typedef struct _cef_v8accessor_t {
   // exception that will be thrown. Return true (1) if accessor assignment was
   // handled.
   ///
-  int(CEF_CALLBACK* set)(struct _cef_v8accessor_t* self,
-                         const cef_string_t* name,
-                         struct _cef_v8value_t* object,
-                         struct _cef_v8value_t* value,
-                         cef_string_t* exception);
+  int(CEF_CALLBACK *set)(struct _cef_v8accessor_t *self,
+                         const cef_string_t *name,
+                         struct _cef_v8value_t *object,
+                         struct _cef_v8value_t *value, cef_string_t *exception);
 } cef_v8accessor_t;
 
 ///
@@ -244,11 +242,11 @@ typedef struct _cef_v8interceptor_t {
   // accessor, it will be called only if you don't set |retval|. Return true (1)
   // if interceptor retrieval was handled, false (0) otherwise.
   ///
-  int(CEF_CALLBACK* get_byname)(struct _cef_v8interceptor_t* self,
-                                const cef_string_t* name,
-                                struct _cef_v8value_t* object,
-                                struct _cef_v8value_t** retval,
-                                cef_string_t* exception);
+  int(CEF_CALLBACK *get_byname)(struct _cef_v8interceptor_t *self,
+                                const cef_string_t *name,
+                                struct _cef_v8value_t *object,
+                                struct _cef_v8value_t **retval,
+                                cef_string_t *exception);
 
   ///
   // Handle retrieval of the interceptor value identified by |index|. |object|
@@ -258,11 +256,10 @@ typedef struct _cef_v8interceptor_t {
   // |exception| to the exception that will be thrown. Return true (1) if
   // interceptor retrieval was handled, false (0) otherwise.
   ///
-  int(CEF_CALLBACK* get_byindex)(struct _cef_v8interceptor_t* self,
-                                 int index,
-                                 struct _cef_v8value_t* object,
-                                 struct _cef_v8value_t** retval,
-                                 cef_string_t* exception);
+  int(CEF_CALLBACK *get_byindex)(struct _cef_v8interceptor_t *self, int index,
+                                 struct _cef_v8value_t *object,
+                                 struct _cef_v8value_t **retval,
+                                 cef_string_t *exception);
 
   ///
   // Handle assignment of the interceptor value identified by |name|. |object|
@@ -272,11 +269,11 @@ typedef struct _cef_v8interceptor_t {
   // be called, even when the property has an associated accessor. Return true
   // (1) if interceptor assignment was handled, false (0) otherwise.
   ///
-  int(CEF_CALLBACK* set_byname)(struct _cef_v8interceptor_t* self,
-                                const cef_string_t* name,
-                                struct _cef_v8value_t* object,
-                                struct _cef_v8value_t* value,
-                                cef_string_t* exception);
+  int(CEF_CALLBACK *set_byname)(struct _cef_v8interceptor_t *self,
+                                const cef_string_t *name,
+                                struct _cef_v8value_t *object,
+                                struct _cef_v8value_t *value,
+                                cef_string_t *exception);
 
   ///
   // Handle assignment of the interceptor value identified by |index|. |object|
@@ -285,11 +282,10 @@ typedef struct _cef_v8interceptor_t {
   // |exception| to the exception that will be thrown. Return true (1) if
   // interceptor assignment was handled, false (0) otherwise.
   ///
-  int(CEF_CALLBACK* set_byindex)(struct _cef_v8interceptor_t* self,
-                                 int index,
-                                 struct _cef_v8value_t* object,
-                                 struct _cef_v8value_t* value,
-                                 cef_string_t* exception);
+  int(CEF_CALLBACK *set_byindex)(struct _cef_v8interceptor_t *self, int index,
+                                 struct _cef_v8value_t *object,
+                                 struct _cef_v8value_t *value,
+                                 cef_string_t *exception);
 } cef_v8interceptor_t;
 
 ///
@@ -306,53 +302,53 @@ typedef struct _cef_v8exception_t {
   // Returns the exception message.
   ///
   // The resulting string must be freed by calling cef_string_userfree_free().
-  cef_string_userfree_t(CEF_CALLBACK* get_message)(
-      struct _cef_v8exception_t* self);
+  cef_string_userfree_t(CEF_CALLBACK *get_message)(
+      struct _cef_v8exception_t *self);
 
   ///
   // Returns the line of source code that the exception occurred within.
   ///
   // The resulting string must be freed by calling cef_string_userfree_free().
-  cef_string_userfree_t(CEF_CALLBACK* get_source_line)(
-      struct _cef_v8exception_t* self);
+  cef_string_userfree_t(CEF_CALLBACK *get_source_line)(
+      struct _cef_v8exception_t *self);
 
   ///
   // Returns the resource name for the script from where the function causing
   // the error originates.
   ///
   // The resulting string must be freed by calling cef_string_userfree_free().
-  cef_string_userfree_t(CEF_CALLBACK* get_script_resource_name)(
-      struct _cef_v8exception_t* self);
+  cef_string_userfree_t(CEF_CALLBACK *get_script_resource_name)(
+      struct _cef_v8exception_t *self);
 
   ///
   // Returns the 1-based number of the line where the error occurred or 0 if the
   // line number is unknown.
   ///
-  int(CEF_CALLBACK* get_line_number)(struct _cef_v8exception_t* self);
+  int(CEF_CALLBACK *get_line_number)(struct _cef_v8exception_t *self);
 
   ///
   // Returns the index within the script of the first character where the error
   // occurred.
   ///
-  int(CEF_CALLBACK* get_start_position)(struct _cef_v8exception_t* self);
+  int(CEF_CALLBACK *get_start_position)(struct _cef_v8exception_t *self);
 
   ///
   // Returns the index within the script of the last character where the error
   // occurred.
   ///
-  int(CEF_CALLBACK* get_end_position)(struct _cef_v8exception_t* self);
+  int(CEF_CALLBACK *get_end_position)(struct _cef_v8exception_t *self);
 
   ///
   // Returns the index within the line of the first character where the error
   // occurred.
   ///
-  int(CEF_CALLBACK* get_start_column)(struct _cef_v8exception_t* self);
+  int(CEF_CALLBACK *get_start_column)(struct _cef_v8exception_t *self);
 
   ///
   // Returns the index within the line of the last character where the error
   // occurred.
   ///
-  int(CEF_CALLBACK* get_end_column)(struct _cef_v8exception_t* self);
+  int(CEF_CALLBACK *get_end_column)(struct _cef_v8exception_t *self);
 } cef_v8exception_t;
 
 ///
@@ -373,101 +369,113 @@ typedef struct _cef_v8value_t {
   // on the current thread. Do not call any other functions if this function
   // returns false (0).
   ///
-  int(CEF_CALLBACK* is_valid)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_valid)(struct _cef_v8value_t *self);
 
   ///
   // True if the value type is undefined.
   ///
-  int(CEF_CALLBACK* is_undefined)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_undefined)(struct _cef_v8value_t *self);
 
   ///
   // True if the value type is null.
   ///
-  int(CEF_CALLBACK* is_null)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_null)(struct _cef_v8value_t *self);
 
   ///
   // True if the value type is bool.
   ///
-  int(CEF_CALLBACK* is_bool)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_bool)(struct _cef_v8value_t *self);
 
   ///
   // True if the value type is int.
   ///
-  int(CEF_CALLBACK* is_int)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_int)(struct _cef_v8value_t *self);
 
   ///
   // True if the value type is unsigned int.
   ///
-  int(CEF_CALLBACK* is_uint)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_uint)(struct _cef_v8value_t *self);
 
   ///
   // True if the value type is double.
   ///
-  int(CEF_CALLBACK* is_double)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_double)(struct _cef_v8value_t *self);
 
   ///
   // True if the value type is Date.
   ///
-  int(CEF_CALLBACK* is_date)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_date)(struct _cef_v8value_t *self);
 
   ///
   // True if the value type is string.
   ///
-  int(CEF_CALLBACK* is_string)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_string)(struct _cef_v8value_t *self);
 
   ///
   // True if the value type is object.
   ///
-  int(CEF_CALLBACK* is_object)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_object)(struct _cef_v8value_t *self);
 
   ///
   // True if the value type is array.
   ///
-  int(CEF_CALLBACK* is_array)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_array)(struct _cef_v8value_t *self);
+
+  ///
+  // True if the value type is an array buffer
+  ///
+  int(CEF_CALLBACK *is_array_buffer)(struct _cef_v8value_t *self);
 
   ///
   // True if the value type is function.
   ///
-  int(CEF_CALLBACK* is_function)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_function)(struct _cef_v8value_t *self);
 
   ///
   // Returns true (1) if this object is pointing to the same handle as |that|
   // object.
   ///
-  int(CEF_CALLBACK* is_same)(struct _cef_v8value_t* self,
-                             struct _cef_v8value_t* that);
+  int(CEF_CALLBACK *is_same)(struct _cef_v8value_t *self,
+                             struct _cef_v8value_t *that);
 
   ///
   // Return a bool value.
   ///
-  int(CEF_CALLBACK* get_bool_value)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *get_bool_value)(struct _cef_v8value_t *self);
 
   ///
   // Return an int value.
   ///
-  int32(CEF_CALLBACK* get_int_value)(struct _cef_v8value_t* self);
+  int32(CEF_CALLBACK *get_int_value)(struct _cef_v8value_t *self);
 
   ///
   // Return an unsigned int value.
   ///
-  uint32(CEF_CALLBACK* get_uint_value)(struct _cef_v8value_t* self);
+  uint32(CEF_CALLBACK *get_uint_value)(struct _cef_v8value_t *self);
 
   ///
   // Return a double value.
   ///
-  double(CEF_CALLBACK* get_double_value)(struct _cef_v8value_t* self);
+  double(CEF_CALLBACK *get_double_value)(struct _cef_v8value_t *self);
 
   ///
   // Return a Date value.
   ///
-  cef_time_t(CEF_CALLBACK* get_date_value)(struct _cef_v8value_t* self);
+  cef_time_t(CEF_CALLBACK *get_date_value)(struct _cef_v8value_t *self);
 
   ///
   // Return a string value.
   ///
   // The resulting string must be freed by calling cef_string_userfree_free().
-  cef_string_userfree_t(CEF_CALLBACK* get_string_value)(
-      struct _cef_v8value_t* self);
+  cef_string_userfree_t(CEF_CALLBACK *get_string_value)(
+      struct _cef_v8value_t *self);
+
+  ///
+  // Return the data contained in the array buffer if is_array_buffer() is true
+  // (1)
+  ///
+  int(CEF_CALLBACK *get_array_buffer_value)(struct _cef_v8value_t *self,
+                                            void **data, size_t *byte_length);
 
   // OBJECT METHODS - These functions are only available on objects. Arrays and
   // functions are also objects. String- and integer-based keys can be used
@@ -476,31 +484,31 @@ typedef struct _cef_v8value_t {
   ///
   // Returns true (1) if this is a user created object.
   ///
-  int(CEF_CALLBACK* is_user_created)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *is_user_created)(struct _cef_v8value_t *self);
 
   ///
   // Returns true (1) if the last function call resulted in an exception. This
   // attribute exists only in the scope of the current CEF value object.
   ///
-  int(CEF_CALLBACK* has_exception)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *has_exception)(struct _cef_v8value_t *self);
 
   ///
   // Returns the exception resulting from the last function call. This attribute
   // exists only in the scope of the current CEF value object.
   ///
-  struct _cef_v8exception_t*(CEF_CALLBACK* get_exception)(
-      struct _cef_v8value_t* self);
+  struct _cef_v8exception_t *(CEF_CALLBACK *get_exception)(
+      struct _cef_v8value_t *self);
 
   ///
   // Clears the last exception and returns true (1) on success.
   ///
-  int(CEF_CALLBACK* clear_exception)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *clear_exception)(struct _cef_v8value_t *self);
 
   ///
   // Returns true (1) if this object will re-throw future exceptions. This
   // attribute exists only in the scope of the current CEF value object.
   ///
-  int(CEF_CALLBACK* will_rethrow_exceptions)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *will_rethrow_exceptions)(struct _cef_v8value_t *self);
 
   ///
   // Set whether this object will re-throw future exceptions. By default
@@ -509,19 +517,19 @@ typedef struct _cef_v8value_t {
   // caught and not re-thrown. Returns true (1) on success. This attribute
   // exists only in the scope of the current CEF value object.
   ///
-  int(CEF_CALLBACK* set_rethrow_exceptions)(struct _cef_v8value_t* self,
+  int(CEF_CALLBACK *set_rethrow_exceptions)(struct _cef_v8value_t *self,
                                             int rethrow);
 
   ///
   // Returns true (1) if the object has a value with the specified identifier.
   ///
-  int(CEF_CALLBACK* has_value_bykey)(struct _cef_v8value_t* self,
-                                     const cef_string_t* key);
+  int(CEF_CALLBACK *has_value_bykey)(struct _cef_v8value_t *self,
+                                     const cef_string_t *key);
 
   ///
   // Returns true (1) if the object has a value with the specified identifier.
   ///
-  int(CEF_CALLBACK* has_value_byindex)(struct _cef_v8value_t* self, int index);
+  int(CEF_CALLBACK *has_value_byindex)(struct _cef_v8value_t *self, int index);
 
   ///
   // Deletes the value with the specified identifier and returns true (1) on
@@ -529,8 +537,8 @@ typedef struct _cef_v8value_t {
   // exception is thrown. For read-only and don't-delete values this function
   // will return true (1) even though deletion failed.
   ///
-  int(CEF_CALLBACK* delete_value_bykey)(struct _cef_v8value_t* self,
-                                        const cef_string_t* key);
+  int(CEF_CALLBACK *delete_value_bykey)(struct _cef_v8value_t *self,
+                                        const cef_string_t *key);
 
   ///
   // Deletes the value with the specified identifier and returns true (1) on
@@ -538,23 +546,22 @@ typedef struct _cef_v8value_t {
   // fails or an exception is thrown. For read-only and don't-delete values this
   // function will return true (1) even though deletion failed.
   ///
-  int(CEF_CALLBACK* delete_value_byindex)(struct _cef_v8value_t* self,
+  int(CEF_CALLBACK *delete_value_byindex)(struct _cef_v8value_t *self,
                                           int index);
 
   ///
   // Returns the value with the specified identifier on success. Returns NULL if
   // this function is called incorrectly or an exception is thrown.
   ///
-  struct _cef_v8value_t*(CEF_CALLBACK* get_value_bykey)(
-      struct _cef_v8value_t* self,
-      const cef_string_t* key);
+  struct _cef_v8value_t *(CEF_CALLBACK *get_value_bykey)(
+      struct _cef_v8value_t *self, const cef_string_t *key);
 
   ///
   // Returns the value with the specified identifier on success. Returns NULL if
   // this function is called incorrectly or an exception is thrown.
   ///
-  struct _cef_v8value_t*(
-      CEF_CALLBACK* get_value_byindex)(struct _cef_v8value_t* self, int index);
+  struct _cef_v8value_t *(CEF_CALLBACK *get_value_byindex)(
+      struct _cef_v8value_t *self, int index);
 
   ///
   // Associates a value with the specified identifier and returns true (1) on
@@ -562,9 +569,9 @@ typedef struct _cef_v8value_t {
   // exception is thrown. For read-only values this function will return true
   // (1) even though assignment failed.
   ///
-  int(CEF_CALLBACK* set_value_bykey)(struct _cef_v8value_t* self,
-                                     const cef_string_t* key,
-                                     struct _cef_v8value_t* value,
+  int(CEF_CALLBACK *set_value_bykey)(struct _cef_v8value_t *self,
+                                     const cef_string_t *key,
+                                     struct _cef_v8value_t *value,
                                      cef_v8_propertyattribute_t attribute);
 
   ///
@@ -573,9 +580,8 @@ typedef struct _cef_v8value_t {
   // exception is thrown. For read-only values this function will return true
   // (1) even though assignment failed.
   ///
-  int(CEF_CALLBACK* set_value_byindex)(struct _cef_v8value_t* self,
-                                       int index,
-                                       struct _cef_v8value_t* value);
+  int(CEF_CALLBACK *set_value_byindex)(struct _cef_v8value_t *self, int index,
+                                       struct _cef_v8value_t *value);
 
   ///
   // Registers an identifier and returns true (1) on success. Access to the
@@ -584,8 +590,8 @@ typedef struct _cef_v8value_t {
   // function is called incorrectly or an exception is thrown. For read-only
   // values this function will return true (1) even though assignment failed.
   ///
-  int(CEF_CALLBACK* set_value_byaccessor)(struct _cef_v8value_t* self,
-                                          const cef_string_t* key,
+  int(CEF_CALLBACK *set_value_byaccessor)(struct _cef_v8value_t *self,
+                                          const cef_string_t *key,
                                           cef_v8_accesscontrol_t settings,
                                           cef_v8_propertyattribute_t attribute);
 
@@ -593,29 +599,47 @@ typedef struct _cef_v8value_t {
   // Read the keys for the object's values into the specified vector. Integer-
   // based keys will also be returned as strings.
   ///
-  int(CEF_CALLBACK* get_keys)(struct _cef_v8value_t* self,
+  int(CEF_CALLBACK *get_keys)(struct _cef_v8value_t *self,
                               cef_string_list_t keys);
+
+  ///
+  // Neuter the array buffer preventing Javascript from accessing the data. This
+  // should be called when an external buffer is created through
+  // cef_v8value_create_array_buffer_externalized() when the memory is about to
+  // be deleted.
+  ///
+  int(CEF_CALLBACK *neuter_array_buffer)(struct _cef_v8value_t *self);
+
+  ///
+  // Externalize this ArrayBuffer and return the data and the number of bytes.
+  // This should only be called on internal buffer created through
+  // cef_v8value_create_array_buffer_internalized(). The ownership of the data
+  // becomes the caller's responsibility. This could be useful for quickly
+  // transferring data from Javascript.
+  ///
+  int(CEF_CALLBACK *externalize_array_buffer)(struct _cef_v8value_t *self,
+                                              void **data, size_t *byte_length);
 
   ///
   // Sets the user data for this object and returns true (1) on success. Returns
   // false (0) if this function is called incorrectly. This function can only be
   // called on user created objects.
   ///
-  int(CEF_CALLBACK* set_user_data)(struct _cef_v8value_t* self,
-                                   struct _cef_base_ref_counted_t* user_data);
+  int(CEF_CALLBACK *set_user_data)(struct _cef_v8value_t *self,
+                                   struct _cef_base_ref_counted_t *user_data);
 
   ///
   // Returns the user data, if any, assigned to this object.
   ///
-  struct _cef_base_ref_counted_t*(CEF_CALLBACK* get_user_data)(
-      struct _cef_v8value_t* self);
+  struct _cef_base_ref_counted_t *(CEF_CALLBACK *get_user_data)(
+      struct _cef_v8value_t *self);
 
   ///
   // Returns the amount of externally allocated memory registered for the
   // object.
   ///
-  int(CEF_CALLBACK* get_externally_allocated_memory)(
-      struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *get_externally_allocated_memory)(
+      struct _cef_v8value_t *self);
 
   ///
   // Adjusts the amount of registered external memory for the object. Used to
@@ -628,16 +652,27 @@ typedef struct _cef_v8value_t {
   // returns the number of bytes associated with the object after the
   // adjustment. This function can only be called on user created objects.
   ///
-  int(CEF_CALLBACK* adjust_externally_allocated_memory)(
-      struct _cef_v8value_t* self,
-      int change_in_bytes);
+  int(CEF_CALLBACK *adjust_externally_allocated_memory)(
+      struct _cef_v8value_t *self, int change_in_bytes);
 
   // ARRAY METHODS - These functions are only available on arrays.
 
   ///
   // Returns the number of elements in the array.
   ///
-  int(CEF_CALLBACK* get_array_length)(struct _cef_v8value_t* self);
+  int(CEF_CALLBACK *get_array_length)(struct _cef_v8value_t *self);
+
+  ///
+  // Returns whether the array buffer can be neutered. See
+  // neuter_array_buffer().
+  ///
+  int(CEF_CALLBACK *is_array_buffer_neuterable)(struct _cef_v8value_t *self);
+
+  ///
+  // True if the ArrayBuffer is 'Externalized' (i.e. ownership lies with the
+  // creator vs. the V8 garbage collector). See externalize_array_buffer().
+  ///
+  int(CEF_CALLBACK *is_array_buffer_external)(struct _cef_v8value_t *self);
 
   // FUNCTION METHODS - These functions are only available on functions.
 
@@ -645,14 +680,14 @@ typedef struct _cef_v8value_t {
   // Returns the function name.
   ///
   // The resulting string must be freed by calling cef_string_userfree_free().
-  cef_string_userfree_t(CEF_CALLBACK* get_function_name)(
-      struct _cef_v8value_t* self);
+  cef_string_userfree_t(CEF_CALLBACK *get_function_name)(
+      struct _cef_v8value_t *self);
 
   ///
   // Returns the function handler or NULL if not a CEF-created function.
   ///
-  struct _cef_v8handler_t*(CEF_CALLBACK* get_function_handler)(
-      struct _cef_v8value_t* self);
+  struct _cef_v8handler_t *(CEF_CALLBACK *get_function_handler)(
+      struct _cef_v8value_t *self);
 
   ///
   // Execute the function using the current V8 context. This function should
@@ -665,11 +700,9 @@ typedef struct _cef_v8value_t {
   // Returns NULL if this function is called incorrectly or an exception is
   // thrown.
   ///
-  struct _cef_v8value_t*(CEF_CALLBACK* execute_function)(
-      struct _cef_v8value_t* self,
-      struct _cef_v8value_t* object,
-      size_t argumentsCount,
-      struct _cef_v8value_t* const* arguments);
+  struct _cef_v8value_t *(CEF_CALLBACK *execute_function)(
+      struct _cef_v8value_t *self, struct _cef_v8value_t *object,
+      size_t argumentsCount, struct _cef_v8value_t *const *arguments);
 
   ///
   // Execute the function using the specified V8 context. |object| is the
@@ -679,43 +712,41 @@ typedef struct _cef_v8value_t {
   // success. Returns NULL if this function is called incorrectly or an
   // exception is thrown.
   ///
-  struct _cef_v8value_t*(CEF_CALLBACK* execute_function_with_context)(
-      struct _cef_v8value_t* self,
-      struct _cef_v8context_t* context,
-      struct _cef_v8value_t* object,
-      size_t argumentsCount,
-      struct _cef_v8value_t* const* arguments);
+  struct _cef_v8value_t *(CEF_CALLBACK *execute_function_with_context)(
+      struct _cef_v8value_t *self, struct _cef_v8context_t *context,
+      struct _cef_v8value_t *object, size_t argumentsCount,
+      struct _cef_v8value_t *const *arguments);
 } cef_v8value_t;
 
 ///
 // Create a new cef_v8value_t object of type undefined.
 ///
-CEF_EXPORT cef_v8value_t* cef_v8value_create_undefined();
+CEF_EXPORT cef_v8value_t *cef_v8value_create_undefined();
 
 ///
 // Create a new cef_v8value_t object of type null.
 ///
-CEF_EXPORT cef_v8value_t* cef_v8value_create_null();
+CEF_EXPORT cef_v8value_t *cef_v8value_create_null();
 
 ///
 // Create a new cef_v8value_t object of type bool.
 ///
-CEF_EXPORT cef_v8value_t* cef_v8value_create_bool(int value);
+CEF_EXPORT cef_v8value_t *cef_v8value_create_bool(int value);
 
 ///
 // Create a new cef_v8value_t object of type int.
 ///
-CEF_EXPORT cef_v8value_t* cef_v8value_create_int(int32 value);
+CEF_EXPORT cef_v8value_t *cef_v8value_create_int(int32 value);
 
 ///
 // Create a new cef_v8value_t object of type unsigned int.
 ///
-CEF_EXPORT cef_v8value_t* cef_v8value_create_uint(uint32 value);
+CEF_EXPORT cef_v8value_t *cef_v8value_create_uint(uint32 value);
 
 ///
 // Create a new cef_v8value_t object of type double.
 ///
-CEF_EXPORT cef_v8value_t* cef_v8value_create_double(double value);
+CEF_EXPORT cef_v8value_t *cef_v8value_create_double(double value);
 
 ///
 // Create a new cef_v8value_t object of type Date. This function should only be
@@ -723,12 +754,12 @@ CEF_EXPORT cef_v8value_t* cef_v8value_create_double(double value);
 // cef_v8handler_t or cef_v8accessor_t callback, or in combination with calling
 // enter() and exit() on a stored cef_v8context_t reference.
 ///
-CEF_EXPORT cef_v8value_t* cef_v8value_create_date(const cef_time_t* date);
+CEF_EXPORT cef_v8value_t *cef_v8value_create_date(const cef_time_t *date);
 
 ///
 // Create a new cef_v8value_t object of type string.
 ///
-CEF_EXPORT cef_v8value_t* cef_v8value_create_string(const cef_string_t* value);
+CEF_EXPORT cef_v8value_t *cef_v8value_create_string(const cef_string_t *value);
 
 ///
 // Create a new cef_v8value_t object of type object with optional accessor
@@ -737,9 +768,9 @@ CEF_EXPORT cef_v8value_t* cef_v8value_create_string(const cef_string_t* value);
 // callback, or in combination with calling enter() and exit() on a stored
 // cef_v8context_t reference.
 ///
-CEF_EXPORT cef_v8value_t* cef_v8value_create_object(
-    cef_v8accessor_t* accessor,
-    cef_v8interceptor_t* interceptor);
+CEF_EXPORT cef_v8value_t *
+cef_v8value_create_object(cef_v8accessor_t *accessor,
+                          cef_v8interceptor_t *interceptor);
 
 ///
 // Create a new cef_v8value_t object of type array with the specified |length|.
@@ -749,7 +780,31 @@ CEF_EXPORT cef_v8value_t* cef_v8value_create_object(
 // or in combination with calling enter() and exit() on a stored cef_v8context_t
 // reference.
 ///
-CEF_EXPORT cef_v8value_t* cef_v8value_create_array(int length);
+CEF_EXPORT cef_v8value_t *cef_v8value_create_array(int length);
+
+///
+// Create a new cef_v8value_t object with typed array buffer pointing to the
+// given |data|. The ArrayBuffer will be created in an 'Externalized' mode, so
+// the ownership lies with the caller. If the data is deleted, make sure to
+// 'Neuter' this ArrayBuffer through neuter_array_buffer() so that any
+// references to it in JS are invalidated. This function should only be called
+// from within the scope of a cef_render_process_handler_t, cef_v8handler_t or
+// cef_v8accessor_t callback, or in combination with calling enter() and exit()
+// on a stored cef_v8context_t reference.
+///
+CEF_EXPORT cef_v8value_t *
+cef_v8value_create_array_buffer_externalized(void *data, size_t byte_length);
+
+///
+// Create a new cef_v8value_t object with typed array buffer pointing to the
+// given |data|. The ArrayBuffer will be created in an 'Internalized' mode, so
+// the ownership lies with V8's garbage collector. This function should only be
+// called from within the scope of a cef_render_process_handler_t,
+// cef_v8handler_t or cef_v8accessor_t callback, or in combination with calling
+// enter() and exit() on a stored cef_v8context_t reference.
+///
+CEF_EXPORT cef_v8value_t *
+cef_v8value_create_array_buffer_internalized(void *data, size_t byte_length);
 
 ///
 // Create a new cef_v8value_t object of type function. This function should only
@@ -757,8 +812,8 @@ CEF_EXPORT cef_v8value_t* cef_v8value_create_array(int length);
 // cef_v8handler_t or cef_v8accessor_t callback, or in combination with calling
 // enter() and exit() on a stored cef_v8context_t reference.
 ///
-CEF_EXPORT cef_v8value_t* cef_v8value_create_function(const cef_string_t* name,
-                                                      cef_v8handler_t* handler);
+CEF_EXPORT cef_v8value_t *cef_v8value_create_function(const cef_string_t *name,
+                                                      cef_v8handler_t *handler);
 
 ///
 // Structure representing a V8 stack trace handle. V8 handles can only be
@@ -778,25 +833,25 @@ typedef struct _cef_v8stack_trace_t {
   // on the current thread. Do not call any other functions if this function
   // returns false (0).
   ///
-  int(CEF_CALLBACK* is_valid)(struct _cef_v8stack_trace_t* self);
+  int(CEF_CALLBACK *is_valid)(struct _cef_v8stack_trace_t *self);
 
   ///
   // Returns the number of stack frames.
   ///
-  int(CEF_CALLBACK* get_frame_count)(struct _cef_v8stack_trace_t* self);
+  int(CEF_CALLBACK *get_frame_count)(struct _cef_v8stack_trace_t *self);
 
   ///
   // Returns the stack frame at the specified 0-based index.
   ///
-  struct _cef_v8stack_frame_t*(
-      CEF_CALLBACK* get_frame)(struct _cef_v8stack_trace_t* self, int index);
+  struct _cef_v8stack_frame_t *(CEF_CALLBACK *get_frame)(
+      struct _cef_v8stack_trace_t *self, int index);
 } cef_v8stack_trace_t;
 
 ///
 // Returns the stack trace for the currently active context. |frame_limit| is
 // the maximum number of frames that will be captured.
 ///
-CEF_EXPORT cef_v8stack_trace_t* cef_v8stack_trace_get_current(int frame_limit);
+CEF_EXPORT cef_v8stack_trace_t *cef_v8stack_trace_get_current(int frame_limit);
 
 ///
 // Structure representing a V8 stack frame handle. V8 handles can only be
@@ -816,14 +871,14 @@ typedef struct _cef_v8stack_frame_t {
   // on the current thread. Do not call any other functions if this function
   // returns false (0).
   ///
-  int(CEF_CALLBACK* is_valid)(struct _cef_v8stack_frame_t* self);
+  int(CEF_CALLBACK *is_valid)(struct _cef_v8stack_frame_t *self);
 
   ///
   // Returns the name of the resource script that contains the function.
   ///
   // The resulting string must be freed by calling cef_string_userfree_free().
-  cef_string_userfree_t(CEF_CALLBACK* get_script_name)(
-      struct _cef_v8stack_frame_t* self);
+  cef_string_userfree_t(CEF_CALLBACK *get_script_name)(
+      struct _cef_v8stack_frame_t *self);
 
   ///
   // Returns the name of the resource script that contains the function or the
@@ -831,36 +886,36 @@ typedef struct _cef_v8stack_frame_t {
   // "//@ sourceURL=..." string.
   ///
   // The resulting string must be freed by calling cef_string_userfree_free().
-  cef_string_userfree_t(CEF_CALLBACK* get_script_name_or_source_url)(
-      struct _cef_v8stack_frame_t* self);
+  cef_string_userfree_t(CEF_CALLBACK *get_script_name_or_source_url)(
+      struct _cef_v8stack_frame_t *self);
 
   ///
   // Returns the name of the function.
   ///
   // The resulting string must be freed by calling cef_string_userfree_free().
-  cef_string_userfree_t(CEF_CALLBACK* get_function_name)(
-      struct _cef_v8stack_frame_t* self);
+  cef_string_userfree_t(CEF_CALLBACK *get_function_name)(
+      struct _cef_v8stack_frame_t *self);
 
   ///
   // Returns the 1-based line number for the function call or 0 if unknown.
   ///
-  int(CEF_CALLBACK* get_line_number)(struct _cef_v8stack_frame_t* self);
+  int(CEF_CALLBACK *get_line_number)(struct _cef_v8stack_frame_t *self);
 
   ///
   // Returns the 1-based column offset on the line for the function call or 0 if
   // unknown.
   ///
-  int(CEF_CALLBACK* get_column)(struct _cef_v8stack_frame_t* self);
+  int(CEF_CALLBACK *get_column)(struct _cef_v8stack_frame_t *self);
 
   ///
   // Returns true (1) if the function was compiled using eval().
   ///
-  int(CEF_CALLBACK* is_eval)(struct _cef_v8stack_frame_t* self);
+  int(CEF_CALLBACK *is_eval)(struct _cef_v8stack_frame_t *self);
 
   ///
   // Returns true (1) if the function was called as a constructor via "new".
   ///
-  int(CEF_CALLBACK* is_constructor)(struct _cef_v8stack_frame_t* self);
+  int(CEF_CALLBACK *is_constructor)(struct _cef_v8stack_frame_t *self);
 } cef_v8stack_frame_t;
 
 ///
@@ -919,12 +974,12 @@ typedef struct _cef_v8stack_frame_t {
 //   example.test.increment();
 // </pre>
 ///
-CEF_EXPORT int cef_register_extension(const cef_string_t* extension_name,
-                                      const cef_string_t* javascript_code,
-                                      cef_v8handler_t* handler);
+CEF_EXPORT int cef_register_extension(const cef_string_t *extension_name,
+                                      const cef_string_t *javascript_code,
+                                      cef_v8handler_t *handler);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // CEF_INCLUDE_CAPI_CEF_V8_CAPI_H_
+#endif // CEF_INCLUDE_CAPI_CEF_V8_CAPI_H_

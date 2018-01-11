@@ -227,6 +227,7 @@ class CefV8ValueImpl : public CefV8Value {
   bool IsString() override;
   bool IsObject() override;
   bool IsArray() override;
+  bool IsArrayBuffer() override;
   bool IsFunction() override;
   bool IsSame(CefRefPtr<CefV8Value> value) override;
   bool GetBoolValue() override;
@@ -235,6 +236,7 @@ class CefV8ValueImpl : public CefV8Value {
   double GetDoubleValue() override;
   CefTime GetDateValue() override;
   CefString GetStringValue() override;
+  bool GetArrayBufferValue(void** data, size_t* byte_length) override;
   bool IsUserCreated() override;
   bool HasException() override;
   CefRefPtr<CefV8Exception> GetException() override;
@@ -255,11 +257,15 @@ class CefV8ValueImpl : public CefV8Value {
                 AccessControl settings,
                 PropertyAttribute attribute) override;
   bool GetKeys(std::vector<CefString>& keys) override;
+  bool NeuterArrayBuffer() override;
+  bool ExternalizeArrayBuffer(void** data, size_t* byte_length) override;
   bool SetUserData(CefRefPtr<CefBaseRefCounted> user_data) override;
   CefRefPtr<CefBaseRefCounted> GetUserData() override;
   int GetExternallyAllocatedMemory() override;
   int AdjustExternallyAllocatedMemory(int change_in_bytes) override;
   int GetArrayLength() override;
+  bool IsArrayBufferNeuterable() override;
+  bool IsArrayBufferExternal() override;
   CefString GetFunctionName() override;
   CefRefPtr<CefV8Handler> GetFunctionHandler() override;
   CefRefPtr<CefV8Value> ExecuteFunction(

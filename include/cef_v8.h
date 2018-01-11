@@ -492,7 +492,35 @@ class CefV8Value : public virtual CefBaseRefCounted {
   ///
   /*--cef()--*/
   static CefRefPtr<CefV8Value> CreateArray(int length);
+  
+  ///
+  // Create a new CefV8Value object with typed array buffer pointing to the
+  // given |data|. The ArrayBuffer will be created in an 'Externalized' mode,
+  // so the ownership lies with the caller. If the data is deleted, make sure
+  // to 'Neuter' this ArrayBuffer through NeuterArrayBuffer() so that any 
+  // references to it in JS are invalidated.
+  // This method should only be called from within the scope of a
+  // CefRenderProcessHandler, CefV8Handler or CefV8Accessor callback, or in
+  // combination with calling Enter() and Exit() on a stored CefV8Context
+  // reference.
+  ///
+  /*--cef()--*/
+  static CefRefPtr<CefV8Value> CreateArrayBufferExternalized(void* data,
+                                                             size_t byte_length);
 
+  ///
+  // Create a new CefV8Value object with typed array buffer pointing to the
+  // given |data|. The ArrayBuffer will be created in an 'Internalized' mode,
+  // so the ownership lies with V8's garbage collector.
+  // This method should only be called from within the scope of a
+  // CefRenderProcessHandler, CefV8Handler or CefV8Accessor callback, or in
+  // combination with calling Enter() and Exit() on a stored CefV8Context
+  // reference.
+  ///
+  /*--cef()--*/
+  static CefRefPtr<CefV8Value> CreateArrayBufferInternalized(void* data,
+                                                             size_t byte_length);
+  
   ///
   // Create a new CefV8Value object of type function. This method should only be
   // called from within the scope of a CefRenderProcessHandler, CefV8Handler or
@@ -572,6 +600,12 @@ class CefV8Value : public virtual CefBaseRefCounted {
   virtual bool IsArray() = 0;
 
   ///
+  // True if the value type is an array buffer
+  ///
+  /*--cef()--*/
+  virtual bool IsArrayBuffer() = 0;
+
+  ///
   // True if the value type is function.
   ///
   /*--cef()--*/
@@ -619,6 +653,12 @@ class CefV8Value : public virtual CefBaseRefCounted {
   ///
   /*--cef()--*/
   virtual CefString GetStringValue() = 0;
+
+  ///
+  // Return the data contained in the array buffer if IsArrayBuffer() is true
+  ///
+  /*--cef()--*/
+  virtual bool GetArrayBufferValue(void** data, size_t* byte_length) = 0;
 
   // OBJECT METHODS - These methods are only available on objects. Arrays and
   // functions are also objects. String- and integer-based keys can be used
@@ -751,6 +791,24 @@ class CefV8Value : public virtual CefBaseRefCounted {
   virtual bool GetKeys(std::vector<CefString>& keys) = 0;
 
   ///
+  // Neuter the array buffer preventing Javascript from accessing the data. This
+  // should be called when an external buffer is created through
+  // CreateArrayBufferExternalized() when the memory is about to be deleted.
+  ///
+  /*--cef()--*/
+  virtual bool NeuterArrayBuffer() = 0;
+  
+  ///
+  // Externalize this ArrayBuffer and return the data and the number of bytes.
+  // This should only be called on internal buffer created through
+  // CreateArrayBufferInternalized(). The ownership of the data becomes the
+  // caller's responsibility. This could be useful for quickly transferring data
+  // from Javascript.
+  ///
+  /*--cef()--*/
+  virtual bool ExternalizeArrayBuffer(void** data, size_t* byte_length) = 0;
+
+  ///
   // Sets the user data for this object and returns true on success. Returns
   // false if this method is called incorrectly. This method can only be called
   // on user created objects.
@@ -793,6 +851,19 @@ class CefV8Value : public virtual CefBaseRefCounted {
   /*--cef()--*/
   virtual int GetArrayLength() = 0;
 
+  ///
+  // Returns whether the array buffer can be neutered. See NeuterArrayBuffer().
+  ///
+  /*--cef()--*/
+  virtual bool IsArrayBufferNeuterable() = 0;
+
+  ///
+  // True if the ArrayBuffer is 'Externalized' (i.e. ownership lies with the creator
+  // vs. the V8 garbage collector). See ExternalizeArrayBuffer().
+  ///
+  /*--cef()--*/
+  virtual bool IsArrayBufferExternal() = 0;
+  
   // FUNCTION METHODS - These methods are only available on functions.
 
   ///

@@ -9,7 +9,7 @@
 // implementations. See the translator.README.txt file in the tools directory
 // for more information.
 //
-// $hash=8a913ff3ac0743621e969fed20ce713804ac4f16$
+// $hash=3d1abc33192a6ee3db22bf5aa48243aedb539d97$
 //
 
 #ifndef CEF_LIBCEF_DLL_CTOCPP_V8VALUE_CTOCPP_H_
@@ -20,16 +20,16 @@
 #error This file can be included wrapper-side only
 #endif
 
-#include <vector>
 #include "include/capi/cef_v8_capi.h"
 #include "include/cef_v8.h"
 #include "libcef_dll/ctocpp/ctocpp_ref_counted.h"
+#include <vector>
 
 // Wrap a C structure with a C++ class.
 // This class may be instantiated and accessed wrapper-side only.
 class CefV8ValueCToCpp
     : public CefCToCppRefCounted<CefV8ValueCToCpp, CefV8Value, cef_v8value_t> {
- public:
+public:
   CefV8ValueCToCpp();
 
   // CefV8Value methods.
@@ -44,6 +44,7 @@ class CefV8ValueCToCpp
   bool IsString() OVERRIDE;
   bool IsObject() OVERRIDE;
   bool IsArray() OVERRIDE;
+  bool IsArrayBuffer() OVERRIDE;
   bool IsFunction() OVERRIDE;
   bool IsSame(CefRefPtr<CefV8Value> that) OVERRIDE;
   bool GetBoolValue() OVERRIDE;
@@ -52,40 +53,43 @@ class CefV8ValueCToCpp
   double GetDoubleValue() OVERRIDE;
   CefTime GetDateValue() OVERRIDE;
   CefString GetStringValue() OVERRIDE;
+  bool GetArrayBufferValue(void **data, size_t *byte_length) OVERRIDE;
   bool IsUserCreated() OVERRIDE;
   bool HasException() OVERRIDE;
   CefRefPtr<CefV8Exception> GetException() OVERRIDE;
   bool ClearException() OVERRIDE;
   bool WillRethrowExceptions() OVERRIDE;
   bool SetRethrowExceptions(bool rethrow) OVERRIDE;
-  bool HasValue(const CefString& key) OVERRIDE;
+  bool HasValue(const CefString &key) OVERRIDE;
   bool HasValue(int index) OVERRIDE;
-  bool DeleteValue(const CefString& key) OVERRIDE;
+  bool DeleteValue(const CefString &key) OVERRIDE;
   bool DeleteValue(int index) OVERRIDE;
-  CefRefPtr<CefV8Value> GetValue(const CefString& key) OVERRIDE;
+  CefRefPtr<CefV8Value> GetValue(const CefString &key) OVERRIDE;
   CefRefPtr<CefV8Value> GetValue(int index) OVERRIDE;
-  bool SetValue(const CefString& key,
-                CefRefPtr<CefV8Value> value,
+  bool SetValue(const CefString &key, CefRefPtr<CefV8Value> value,
                 PropertyAttribute attribute) OVERRIDE;
   bool SetValue(int index, CefRefPtr<CefV8Value> value) OVERRIDE;
-  bool SetValue(const CefString& key,
-                AccessControl settings,
+  bool SetValue(const CefString &key, AccessControl settings,
                 PropertyAttribute attribute) OVERRIDE;
-  bool GetKeys(std::vector<CefString>& keys) OVERRIDE;
+  bool GetKeys(std::vector<CefString> &keys) OVERRIDE;
+  bool NeuterArrayBuffer() OVERRIDE;
+  bool ExternalizeArrayBuffer(void **data, size_t *byte_length) OVERRIDE;
   bool SetUserData(CefRefPtr<CefBaseRefCounted> user_data) OVERRIDE;
   CefRefPtr<CefBaseRefCounted> GetUserData() OVERRIDE;
   int GetExternallyAllocatedMemory() OVERRIDE;
   int AdjustExternallyAllocatedMemory(int change_in_bytes) OVERRIDE;
   int GetArrayLength() OVERRIDE;
+  bool IsArrayBufferNeuterable() OVERRIDE;
+  bool IsArrayBufferExternal() OVERRIDE;
   CefString GetFunctionName() OVERRIDE;
   CefRefPtr<CefV8Handler> GetFunctionHandler() OVERRIDE;
-  CefRefPtr<CefV8Value> ExecuteFunction(
-      CefRefPtr<CefV8Value> object,
-      const CefV8ValueList& arguments) OVERRIDE;
-  CefRefPtr<CefV8Value> ExecuteFunctionWithContext(
-      CefRefPtr<CefV8Context> context,
-      CefRefPtr<CefV8Value> object,
-      const CefV8ValueList& arguments) OVERRIDE;
+  CefRefPtr<CefV8Value>
+  ExecuteFunction(CefRefPtr<CefV8Value> object,
+                  const CefV8ValueList &arguments) OVERRIDE;
+  CefRefPtr<CefV8Value>
+  ExecuteFunctionWithContext(CefRefPtr<CefV8Context> context,
+                             CefRefPtr<CefV8Value> object,
+                             const CefV8ValueList &arguments) OVERRIDE;
 };
 
-#endif  // CEF_LIBCEF_DLL_CTOCPP_V8VALUE_CTOCPP_H_
+#endif // CEF_LIBCEF_DLL_CTOCPP_V8VALUE_CTOCPP_H_

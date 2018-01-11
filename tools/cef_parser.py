@@ -351,6 +351,7 @@ _cre_virtual = '(?:[\s]{1,}virtual){0,1}'
 _simpletypes = {
     'void': ['void', ''],
     'void*': ['void*', 'NULL'],
+    'void**' : ['void**', 'NULL'],
     'int': ['int', '0'],
     'int16': ['int16', '0'],
     'uint16': ['uint16', '0'],

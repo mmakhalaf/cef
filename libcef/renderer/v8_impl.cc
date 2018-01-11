@@ -1291,6 +1291,74 @@ CefRefPtr<CefV8Value> CefV8Value::CreateArray(int length) {
 }
 
 // static
+CefRefPtr<CefV8Value> CefV8Value::CreateArrayBufferExternalized(
+   void* data, 
+   size_t length) {
+  CEF_V8_REQUIRE_ISOLATE_RETURN(NULL);
+
+  v8::Isolate* isolate = GetIsolateManager()->isolate();
+  v8::HandleScope handle_scope(isolate);
+
+  v8::Local<v8::Context> context = isolate->GetCurrentContext();
+  if (context.IsEmpty()) {
+    NOTREACHED() << "not currently in a V8 context";
+    return NULL;
+  }
+
+  // Create a tracker object that will cause the user data reference to be
+  // released when the V8 object is destroyed.
+  V8TrackObject* tracker = new V8TrackObject(isolate);
+  
+  // Create the new V8 array.
+  v8::Local<v8::ArrayBuffer> arr = v8::ArrayBuffer::New(
+      isolate, 
+      data, 
+      length, 
+      v8::ArrayBufferCreationMode::kExternalized);
+  
+  // Attach the tracker object.
+  tracker->AttachTo(context, arr);
+
+  CefRefPtr<CefV8ValueImpl> impl = new CefV8ValueImpl(isolate);
+  impl->InitObject(arr, tracker);
+  return impl.get();
+}
+
+// static
+CefRefPtr<CefV8Value> CefV8Value::CreateArrayBufferInternalized(
+   void* data, 
+   size_t length) {
+  CEF_V8_REQUIRE_ISOLATE_RETURN(NULL);
+
+  v8::Isolate* isolate = GetIsolateManager()->isolate();
+  v8::HandleScope handle_scope(isolate);
+
+  v8::Local<v8::Context> context = isolate->GetCurrentContext();
+  if (context.IsEmpty()) {
+    NOTREACHED() << "not currently in a V8 context";
+    return NULL;
+  }
+
+  // Create a tracker object that will cause the user data reference to be
+  // released when the V8 object is destroyed.
+  V8TrackObject* tracker = new V8TrackObject(isolate);
+  
+  // Create the new V8 array to own the given data
+  v8::Local<v8::ArrayBuffer> arr = v8::ArrayBuffer::New(
+      isolate, 
+      data, 
+      length,
+      v8::ArrayBufferCreationMode::kInternalized);
+  
+  // Attach the tracker object.
+  tracker->AttachTo(context, arr);
+
+  CefRefPtr<CefV8ValueImpl> impl = new CefV8ValueImpl(isolate);
+  impl->InitObject(arr, tracker);
+  return impl.get();
+}
+
+// static
 CefRefPtr<CefV8Value> CefV8Value::CreateFunction(
     const CefString& name,
     CefRefPtr<CefV8Handler> handler) {
@@ -1390,6 +1458,8 @@ void CefV8ValueImpl::InitFromV8Value(v8::Local<v8::Context> context,
     GetCefString(value->ToString(), rv);
     InitString(rv);
   } else if (value->IsObject()) {
+    InitObject(value, NULL);
+  } else if (value->IsArrayBuffer()) {
     InitObject(value, NULL);
   }
 }
@@ -1550,6 +1620,16 @@ bool CefV8ValueImpl::IsArray() {
   }
 }
 
+bool CefV8ValueImpl::IsArrayBuffer() {
+  CEF_V8_REQUIRE_MLT_RETURN(false);
+  if (type_ == TYPE_OBJECT) {
+    v8::HandleScope handle_scope(handle_->isolate());
+    return handle_->GetNewV8Handle(false)->IsArrayBuffer();
+  } else {
+    return false;
+  }
+}
+
 bool CefV8ValueImpl::IsFunction() {
   CEF_V8_REQUIRE_MLT_RETURN(false);
   if (type_ == TYPE_OBJECT) {
@@ -1641,6 +1721,32 @@ CefString CefV8ValueImpl::GetStringValue() {
   if (type_ == TYPE_STRING)
     rv = CefString(&string_value_);
   return rv;
+}
+
+bool CefV8ValueImpl::GetArrayBufferValue(void** data, size_t* byte_length) {
+  CEF_V8_REQUIRE_ISOLATE_RETURN(false);
+
+  if (type_ != TYPE_OBJECT) {
+     NOT_REACHED() << "not an array buffer";
+     return false;
+  }
+  v8::HandleScope handle_scope(handle_->isolate());
+  v8::Local<v8::Value> value = handle_->GetNewV8Handle(false);
+  if (!value->IsArrayBuffer()) {
+     NOT_REACHED() << "not an array buffer";
+     return false;
+  }
+  
+  v8::Local<v8::Object> obj = value->ToObject();
+  v8::Local<v8::ArrayBuffer> arr = v8::Local<v8::ArrayBuffer>::Cast(obj);
+  v8::ArrayBuffer::Contents arr_data = arr->GetContents();
+
+  if (data)
+    *data = arr_data.Data();
+  if (byte_length)
+    *byte_length = arr_data.ByteLength();
+  
+  return true;
 }
 
 bool CefV8ValueImpl::IsUserCreated() {
@@ -1965,6 +2071,62 @@ bool CefV8ValueImpl::GetKeys(std::vector<CefString>& keys) {
   return true;
 }
 
+bool CefV8ValueImpl::NeuterArrayBuffer() {
+  CEF_V8_REQUIRE_MLT_RETURN(false);
+  
+  if (type_ != TYPE_OBJECT) {
+     NOT_REACHED() << "not an array buffer";
+     return false;
+  }
+  v8::HandleScope handle_scope(handle_->isolate());
+  v8::Local<v8::Value> value = handle_->GetNewV8Handle(false);
+  if (!value->IsArrayBuffer()) {
+     NOT_REACHED() << "not an array buffer";
+     return false;
+  }
+  
+  v8::Local<v8::Object> obj = value->ToObject();
+  v8::Local<v8::ArrayBuffer> arr = v8::Local<v8::ArrayBuffer>::Cast(obj);
+
+  if (!arr->IsNeuterable()) {
+    NOT_REACHED() << "array buffer is external";
+    return false;
+  }
+  
+  arr->Neuter();
+  return true;
+}
+
+bool CefV8ValueImpl::ExternalizeArrayBuffer(void** data, size_t* byte_length) {
+  CEF_V8_REQUIRE_MLT_RETURN(false);
+  
+  if (type_ != TYPE_OBJECT) {
+     NOT_REACHED() << "not an array buffer";
+     return false;
+  }
+  v8::HandleScope handle_scope(handle_->isolate());
+  v8::Local<v8::Value> value = handle_->GetNewV8Handle(false);
+  if (!value->IsArrayBuffer()) {
+     NOT_REACHED() << "not an array buffer";
+     return false;
+  }
+  
+  v8::Local<v8::Object> obj = value->ToObject();
+  v8::Local<v8::ArrayBuffer> arr = v8::Local<v8::ArrayBuffer>::Cast(obj);
+  if (arr->IsExternal()) {
+     NOT_REACHED() << "array buffer is external";
+     return false;
+  }
+
+  v8::ArrayBuffer::Contents arr_data = arr->Externalize();
+  if (data)
+    *data = arr_data.Data();
+  if (byte_length)
+    *byte_length = arr_data.ByteLength();
+  
+  return true;
+}
+
 bool CefV8ValueImpl::SetUserData(CefRefPtr<CefBaseRefCounted> user_data) {
   CEF_V8_REQUIRE_OBJECT_RETURN(false);
 
@@ -2068,6 +2230,46 @@ int CefV8ValueImpl::GetArrayLength() {
   v8::Local<v8::Object> obj = value->ToObject();
   v8::Local<v8::Array> arr = v8::Local<v8::Array>::Cast(obj);
   return arr->Length();
+}
+
+bool CefV8ValueImpl::IsArrayBufferNeuterable() {
+  CEF_V8_REQUIRE_MLT_RETURN(false);
+
+  if (type_ != TYPE_OBJECT) {
+     NOT_REACHED() << "not an array buffer";
+     return false;
+  }
+  v8::HandleScope handle_scope(handle_->isolate());
+  v8::Local<v8::Value> value = handle_->GetNewV8Handle(false);
+  if (!value->IsArrayBuffer()) {
+     NOT_REACHED() << "not an array buffer";
+     return false;
+  }
+  
+  v8::Local<v8::Object> obj = value->ToObject();
+  v8::Local<v8::ArrayBuffer> arr = v8::Local<v8::ArrayBuffer>::Cast(obj);
+  
+  return arr->IsNeuterable();
+}
+
+bool CefV8ValueImpl::IsArrayBufferExternal() {
+  CEF_V8_REQUIRE_MLT_RETURN(false);
+
+  if (type_ != TYPE_OBJECT) {
+     NOT_REACHED() << "not an array buffer";
+     return false;
+  }
+  v8::HandleScope handle_scope(handle_->isolate());
+  v8::Local<v8::Value> value = handle_->GetNewV8Handle(false);
+  if (!value->IsArrayBuffer()) {
+     NOT_REACHED() << "not an array buffer";
+     return false;
+  }
+  
+  v8::Local<v8::Object> obj = value->ToObject();
+  v8::Local<v8::ArrayBuffer> arr = v8::Local<v8::ArrayBuffer>::Cast(obj);
+  
+  return arr->IsExternal();
 }
 
 CefString CefV8ValueImpl::GetFunctionName() {
