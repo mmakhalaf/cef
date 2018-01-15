@@ -1727,13 +1727,13 @@ bool CefV8ValueImpl::GetArrayBufferValue(void** data, size_t* byte_length) {
   CEF_V8_REQUIRE_ISOLATE_RETURN(false);
 
   if (type_ != TYPE_OBJECT) {
-     NOT_REACHED() << "not an array buffer";
+     NOTREACHED() << "not an array buffer";
      return false;
   }
   v8::HandleScope handle_scope(handle_->isolate());
   v8::Local<v8::Value> value = handle_->GetNewV8Handle(false);
   if (!value->IsArrayBuffer()) {
-     NOT_REACHED() << "not an array buffer";
+     NOTREACHED() << "not an array buffer";
      return false;
   }
   
@@ -2075,13 +2075,13 @@ bool CefV8ValueImpl::NeuterArrayBuffer() {
   CEF_V8_REQUIRE_MLT_RETURN(false);
   
   if (type_ != TYPE_OBJECT) {
-     NOT_REACHED() << "not an array buffer";
+     NOTREACHED() << "not an array buffer";
      return false;
   }
   v8::HandleScope handle_scope(handle_->isolate());
   v8::Local<v8::Value> value = handle_->GetNewV8Handle(false);
   if (!value->IsArrayBuffer()) {
-     NOT_REACHED() << "not an array buffer";
+     NOTREACHED() << "not an array buffer";
      return false;
   }
   
@@ -2089,7 +2089,7 @@ bool CefV8ValueImpl::NeuterArrayBuffer() {
   v8::Local<v8::ArrayBuffer> arr = v8::Local<v8::ArrayBuffer>::Cast(obj);
 
   if (!arr->IsNeuterable()) {
-    NOT_REACHED() << "array buffer is external";
+    NOTREACHED() << "array buffer is external";
     return false;
   }
   
@@ -2101,20 +2101,20 @@ bool CefV8ValueImpl::ExternalizeArrayBuffer(void** data, size_t* byte_length) {
   CEF_V8_REQUIRE_MLT_RETURN(false);
   
   if (type_ != TYPE_OBJECT) {
-     NOT_REACHED() << "not an array buffer";
+     NOTREACHED() << "not an array buffer";
      return false;
   }
   v8::HandleScope handle_scope(handle_->isolate());
   v8::Local<v8::Value> value = handle_->GetNewV8Handle(false);
   if (!value->IsArrayBuffer()) {
-     NOT_REACHED() << "not an array buffer";
+     NOTREACHED() << "not an array buffer";
      return false;
   }
   
   v8::Local<v8::Object> obj = value->ToObject();
   v8::Local<v8::ArrayBuffer> arr = v8::Local<v8::ArrayBuffer>::Cast(obj);
   if (arr->IsExternal()) {
-     NOT_REACHED() << "array buffer is external";
+     NOTREACHED() << "array buffer is external";
      return false;
   }
 
@@ -2236,13 +2236,13 @@ bool CefV8ValueImpl::IsArrayBufferNeuterable() {
   CEF_V8_REQUIRE_MLT_RETURN(false);
 
   if (type_ != TYPE_OBJECT) {
-     NOT_REACHED() << "not an array buffer";
+     NOTREACHED() << "not an array buffer";
      return false;
   }
   v8::HandleScope handle_scope(handle_->isolate());
   v8::Local<v8::Value> value = handle_->GetNewV8Handle(false);
   if (!value->IsArrayBuffer()) {
-     NOT_REACHED() << "not an array buffer";
+     NOTREACHED() << "not an array buffer";
      return false;
   }
   
@@ -2256,13 +2256,13 @@ bool CefV8ValueImpl::IsArrayBufferExternal() {
   CEF_V8_REQUIRE_MLT_RETURN(false);
 
   if (type_ != TYPE_OBJECT) {
-     NOT_REACHED() << "not an array buffer";
+     NOTREACHED() << "not an array buffer";
      return false;
   }
   v8::HandleScope handle_scope(handle_->isolate());
   v8::Local<v8::Value> value = handle_->GetNewV8Handle(false);
   if (!value->IsArrayBuffer()) {
-     NOT_REACHED() << "not an array buffer";
+     NOTREACHED() << "not an array buffer";
      return false;
   }
   
